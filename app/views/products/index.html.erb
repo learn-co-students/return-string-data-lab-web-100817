@@ -1,1 +1,46 @@
 
+  <% @products.each do |product| %>
+  <h5><%= product.name %></h5>
+  <p id="<%= product.id %>"><%= truncate product.description %></p>
+  <button type="button" data-productid="<%=product.id%>" class="see-more">See More</button>
+  <% end %>
+
+
+<script>
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains("see-more")) {
+      id = event.target.dataset.productid
+      getFullDescription(id);
+    }
+  })
+
+  function getFullDescription(productId) {
+    fetch(`/products/${productId}/description`)
+      .then(res => res.json())
+      .then(desc => displayDescription(desc))
+    fetch(`/products/${productId}/inventory`)
+        .then(res => res.json())
+        .then(json => displayAvailability(json))
+  }
+
+  function displayDescription(desc) {
+    let idLi = document.getElementById(id)
+    idLi.innerText = desc;
+  }
+
+  // function getAvailability(productId) {
+  //   fetch(`/products/${productId}/inventory`)
+  //     .then(res => res.json())
+  //     .then(json => displayAvailability(json))
+  // }
+
+  function displayAvailability(desc) {
+    let idLi = document.getElementById(id)
+    if (desc == "true") {
+      idLi.innerText += " - Available"
+    }
+    else {
+      idLi.innerText += " - Sold Out"
+    }
+  }
+</script>
